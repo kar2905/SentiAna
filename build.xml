@@ -1,0 +1,48 @@
+<project name="medalliachallenge" default="dist" basedir=".">
+    <description>
+        simple example build.dir file for the Medallia Challenge
+    </description>
+  <property name="src.dir"      location="src"/>
+  <property name="build.dir"    location="build"/>
+  <property name="dist.dir"     location="dist"/>
+  <property name="lib.dir"      location="lib"/>
+  <property name="marshall.dir" location="marshall"/>
+  <property name="combined.jar" value="com.medallia.challenge.jar"/>
+
+  <path id="classpath">
+    <fileset dir="${lib.dir}" includes="**/*.jar"/>
+  </path>
+
+  <target name="init">
+    <mkdir dir="${build.dir}"/>
+  </target>
+
+  <target name="compile" depends="init" description="compile the source">
+    <javac srcdir="${src.dir}" destdir="${build.dir}" classpathref="classpath" includeantruntime="false" />
+  </target>
+
+  <target name="dist" depends="compile" description="generate the distribution">
+    <mkdir dir="${marshall.dir}"/>
+    <mkdir dir="${dist.dir}"/>
+
+    <unzip dest="${marshall.dir}">
+        <fileset dir="${lib.dir}">
+            <include name="**/*.jar"/>
+        </fileset>
+    </unzip>
+
+    <copy todir="${marshall.dir}">
+      <fileset dir="${build.dir}"/>
+    </copy>
+
+    <jar destfile="${dist.dir}/${combined.jar}" basedir="${marshall.dir}"/>
+
+    <delete dir="${marshall.dir}"/>
+  </target>
+
+  <target name="clean" description="clean up" >
+    <delete dir="${build.dir}"/>
+    <delete dir="${marshall.dir}"/>
+    <delete dir="${dist.dir}"/>
+  </target>
+</project>
